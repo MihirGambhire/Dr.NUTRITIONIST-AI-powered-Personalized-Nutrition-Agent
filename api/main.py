@@ -23,12 +23,12 @@ def load_user_profile():
         return profile
 
 def main():
-    print("\n✅ Dr.Nutritionist is running!")
+    print("\n Dr.Nutritionist is running!")
     profile = load_user_profile()
     print("👤 User profile:", profile)
 
     input_agent = InputAgent()
-    nutrition_agent = NutritionAgent(api_key="PCxfmnrVtnEzYpdZUYPAAjNQtL0Y1iDaWn1KXkJu")
+    nutrition_agent = NutritionAgent(api_key="ENTER YOUR API KEY HERE")
     reporting_agent = ReportingAgent()
 
     meals = []
