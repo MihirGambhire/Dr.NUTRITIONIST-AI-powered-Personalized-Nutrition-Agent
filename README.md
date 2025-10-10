@@ -1,4 +1,4 @@
-# Dr. Nutritionist 🍎 | Your Personal AI Dietitian
+# Dr. Nutritionist  | Your Personal AI Dietitian
 
 Dr. Nutritionist is an intelligent application designed to provide personalized nutrition and meal planning. By analyzing your unique user profile, fitness goals, and dietary preferences, it acts as your personal AI dietitian to help you achieve a healthier lifestyle.
 
@@ -85,3 +85,4 @@ Contributions are welcome! If you have suggestions or want to improve the projec
 3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4.  Push to the Branch (`git push origin feature/AmazingFeature`)
 5.  Open a Pull Request
+
