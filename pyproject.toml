@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dr-nutritionist"
+version = "0.2.0"
+description = "Log a meal in plain English and get the day's macros against targets built from your own profile."
+requires-python = ">=3.11"
+dependencies = [
+    "crewai>=1.15",
+    "crewai-tools",
+    "litellm",
+    "google-genai",
+    "streamlit",
+    "pandas",
+    "requests",
+    "python-dotenv",
+    "pydantic>=2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+# The package is installed rather than imported by path, because
+# Streamlit puts the script's own folder on sys.path and not the project
+# root: running app/streamlit_app.py from a fresh clone failed with
+# "No module named dr_nutritionist" until this existed.
+[tool.setuptools.packages.find]
+include = ["dr_nutritionist*"]

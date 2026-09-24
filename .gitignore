@@ -15,3 +15,6 @@ daily_log.xlsx
 user_profile.json
 data/user_logs/
 .pytest_cache/
+
+# Editable install metadata
+*.egg-info/

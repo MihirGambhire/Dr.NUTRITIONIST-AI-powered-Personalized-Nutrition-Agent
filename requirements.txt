@@ -1,6 +1,7 @@
 crewai>=1.15
 crewai-tools
 litellm
+google-genai
 mistralai
 streamlit
 pandas
