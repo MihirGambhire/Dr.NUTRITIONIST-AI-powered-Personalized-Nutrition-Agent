@@ -1,3 +1,5 @@
+import os
+
 from crewai import Agent
 import requests
 
@@ -9,7 +11,15 @@ class NutritionAgent(Agent):
             goal="Retrieve macro and micronutrient details from the USDA API.",
             backstory="This agent connects to the USDA FoodData Central to fetch accurate nutrition facts for foods logged by the user."
         )
-        self.api_key = "PCxfmnrVtnEzYpdZUYPAAjNQtL0Y1iDaWn1KXkJu"  # ✅ Save the key
+        # The key comes from the environment. An earlier version of this
+        # file had it written in the source, which is why it has been
+        # revoked and replaced.
+        self.api_key = api_key or os.environ.get("USDA_API_KEY", "")
+        if not self.api_key:
+            raise RuntimeError(
+                "USDA_API_KEY is not set. Get a free key from "
+                "https://fdc.nal.usda.gov/api-key-signup.html and put it in .env"
+            )
 
     def search_food(self, query):
         url = f"https://api.nal.usda.gov/fdc/v1/foods/search?query={query}&api_key={self.api_key}"

@@ -1,0 +1,17 @@
+# Secrets. The USDA key belongs in .env, never in the source.
+.env
+
+# Virtual environments
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Anything the app writes at runtime
+daily_log.xlsx
+user_profile.json
+data/user_logs/
+.pytest_cache/
