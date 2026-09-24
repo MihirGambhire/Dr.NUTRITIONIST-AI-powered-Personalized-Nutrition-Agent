@@ -1,5 +1,9 @@
-crewai
+crewai>=1.15
+crewai-tools
+mistralai
+streamlit
 pandas
-openpyxl
-matplotlib
 requests
+python-dotenv
+pydantic>=2
+pytest
