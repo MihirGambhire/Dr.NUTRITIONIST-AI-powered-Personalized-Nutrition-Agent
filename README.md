@@ -129,6 +129,22 @@ tests/              114 tests, no API key and no network needed
 
 ---
 
+## Running on free tiers
+
+Both model providers are free tiers and both throttle, which shaped the design
+more than anything else:
+
+- Mistral's free key returned 429 on a single call for hours at a time
+- Gemini allows 5 requests a minute on the free tier, and one run of the crew
+  uses three or four of them
+- Gemini 2.5 Flash is no longer offered to new keys at all, which is why the
+  default is 3.6
+
+So the provider chain is not decoration. During development the first provider
+was unavailable for every single run, the crew completed on the second, and when
+that one hit its per minute limit the summary fell back to a templated one built
+from numbers that were already final. The result was correct every time.
+
 ## Three bugs worth recording
 
 **An intermittent 400 from USDA.** Identical requests failed about a third of

@@ -16,7 +16,7 @@ load_dotenv()
 
 MISTRAL_MODEL = os.environ.get("MISTRAL_MODEL", "mistral/mistral-small-latest")
 MISTRAL_API_KEY = os.environ.get("MISTRAL_API_KEY", "")
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini/gemini-2.5-flash")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini/gemini-3.6-flash")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 USDA_API_KEY = os.environ.get("USDA_API_KEY", "")
 

@@ -20,7 +20,10 @@ from .schemas import MealItem, ParsedMeal
 # from the list of typical weights, because that list also holds foods:
 # in "2 eggs", "eggs" is the food, not the unit, and reading it as a unit
 # leaves an item with no name at all.
-COUNT_UNITS = {"piece", "pieces", "slice", "slices", "scoop", "scoops", "cup", "cups"}
+COUNT_UNITS = {
+    "piece", "pieces", "slice", "slices", "scoop", "scoops", "cup", "cups",
+    "bowl", "bowls", "katori", "glass", "glasses",
+}
 KNOWN_UNITS = set(GRAMS_PER_UNIT) | COUNT_UNITS
 
 # "150g chicken", "2 eggs", "1.5 kg rice". The number may be stuck to the

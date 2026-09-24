@@ -120,9 +120,12 @@ def _read_task(agent: Agent, meal_text: str) -> Task:
         description=(
             f"Split this meal into individual foods with amounts:\n\n{meal_text}\n\n"
             "Give each item a plain food name with no adjectives about cooking or "
-            "leftovers, a quantity, and a unit of g, kg, ml, piece, or an empty "
-            "string. If someone writes 'a couple of eggs', that is quantity 2, unit "
-            "'piece'. Do not invent foods that were not mentioned."
+            "leftovers, a quantity, and one of these units: g, kg, ml, piece, "
+            "cup, bowl, katori, glass, or an empty string. If someone writes 'a "
+            "couple of eggs', that is quantity 2, unit 'piece'. 'A bowl of dal' is "
+            "quantity 1, unit 'bowl'. Keep the serving word: dropping it turns a "
+            "bowl into a default handful. Do not invent foods that were not "
+            "mentioned."
         ),
         expected_output="A list of food items, each with name, quantity and unit.",
         agent=agent,
@@ -220,12 +223,16 @@ def run(meal_text: str, profile: Profile) -> DayResult:
     failures: list[str] = []
     for model, key in config.providers():
         tool.forget()
-        llm = _llm(model, key)
-        reader = meal_reader(llm)
-        researcher = nutrition_looker_upper(llm, tool)
-        read = _read_task(reader, meal_text)
-        look_up = _lookup_task(researcher, context=[read])
         try:
+            # Building the model counts as part of trying it. A missing
+            # provider package raises here rather than on the call, and
+            # the first draft of this loop let that crash the whole run
+            # instead of moving on to the next provider.
+            llm = _llm(model, key)
+            reader = meal_reader(llm)
+            researcher = nutrition_looker_upper(llm, tool)
+            read = _read_task(reader, meal_text)
+            look_up = _lookup_task(researcher, context=[read])
             Crew(
                 agents=[reader, researcher],
                 tasks=[read, look_up],
@@ -265,15 +272,27 @@ def run(meal_text: str, profile: Profile) -> DayResult:
 
     # The advice step is the only one that can fail without costing the
     # result, because the numbers are already final by this point.
-    try:
-        coach_agent = coach(llm)
-        advice_task = _advice_task(coach_agent, totals, short)
-        Crew(agents=[coach_agent], tasks=[advice_task], process=Process.sequential).kickoff()
-        advice = advice_task.output.pydantic if advice_task.output else None
-        if not isinstance(advice, Advice):
-            raise ValueError("the coach did not return a usable summary")
-    except Exception as problem:  # noqa: BLE001
-        notes.append(f"Wrote the summary without the model: {problem}")
+    # The same chain again, because the provider that answered a minute
+    # ago can be busy by the time this runs: in testing the reader
+    # succeeded on one provider and the coach came back 503 on the next
+    # call to it.
+    advice = None
+    last_problem = ""
+    for model, key in config.providers():
+        try:
+            coach_agent = coach(_llm(model, key))
+            advice_task = _advice_task(coach_agent, totals, short)
+            Crew(agents=[coach_agent], tasks=[advice_task], process=Process.sequential).kickoff()
+            candidate = advice_task.output.pydantic if advice_task.output else None
+            if not isinstance(candidate, Advice):
+                raise ValueError("the coach did not return a usable summary")
+            advice = candidate
+            break
+        except Exception as problem:  # noqa: BLE001, try the next provider
+            last_problem = str(problem)
+
+    if advice is None:
+        notes.append(f"Wrote the summary without the model: {last_problem[:120]}")
         advice = _plain_advice(totals, short)
 
     return DayResult(totals=totals, advice=advice, skipped=skipped, used_model=True, notes=notes)

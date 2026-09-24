@@ -31,6 +31,9 @@ TYPICAL_PIECE_GRAMS = {
     "slice": 30.0,
     "scoop": 30.0,
     "cup": 240.0,
+    "bowl": 200.0,
+    "katori": 150.0,
+    "glass": 240.0,
 }
 
 DEFAULT_PIECE_GRAMS = 100.0
